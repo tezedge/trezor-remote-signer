@@ -15,18 +15,19 @@ public_key_hash="$(
          --data $HW_WALLET_HD_PATH  | jq -r '.pkh' )"
 
 
-# tezos-client --addr $ADDRESS --port $PORT --tls  man -v 3
-echo "[+][remote-node] timestamp: $(tezos-client --addr $ADDRESS --port $PORT --tls get timestamp)"
 
 echo "[+][hw-wallet] address: $public_key_hash "
 echo "[+][hw-wallet] path: $HW_WALLET_HD_PATH"
 echo "[+][hw-wallet] balance: $(tezos-client --addr $ADDRESS --port $PORT --tls get balance for $public_key_hash)"
 
+# tezos-client --addr $ADDRESS --port $PORT --tls  man -v 3
+echo "[+][remote-node] timestamp: $(tezos-client --addr $ADDRESS --port $PORT --tls get timestamp)"
+
 #change direcotry to faucet folder
 cd "/var/tezos-client/faucet/"
 
 # activate all wallets from ./faucet direcotry
-for file in * 
+while file in *
 do  
    # remove .json from filename
    faucet_public_key_hash=${file::-5}  

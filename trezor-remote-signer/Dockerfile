@@ -23,8 +23,6 @@ RUN \
 COPY requirements.txt /
 RUN pip3 install -r requirements.txt
 
-# get remote signer repository
-RUN git clone https://bitbucket.org/jurajselep/remote-signer.git --branch tezos-trezor_signer 
 
 # get repositories for trezorctl & trezorlib
 RUN git clone https://github.com/simplestaking/trezor-common.git --branch staking_message
@@ -35,6 +33,8 @@ RUN cp -r trezor-common python-trezor/vendor/
 # setup python trezor
 RUN cd python-trezor && python setup.py develop 
 
-EXPOSE 5000
+# get remote signer repository
+RUN git clone https://bitbucket.org/jurajselep/remote-signer.git --branch tezos-trezor_signer #4
+
 
 # CMD ["gunicorn", "-b", "0.0.0.0:5000", "-w", "4", "signer:app"]

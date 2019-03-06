@@ -5,7 +5,7 @@ services:
     build: ./trezor-remote-signer
     hostname: trezor-remote-signer
     devices:
-      - /dev/bus/usb/003/008
+      - /dev/bus/usb/003/012
     ports:
     - "5000:5000"
     volumes:

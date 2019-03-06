@@ -3,5 +3,7 @@ echo "Trezor remote singner"
 
 #trezorctl list
 
+export FLASK_APP=signer.py
+export FLASK_ENV=development
 cd ./remote-signer
-gunicorn -b 0.0.0.0:5000 -w 4 signer:app
+flask run --host=0.0.0.0
