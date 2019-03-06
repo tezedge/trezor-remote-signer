@@ -9,13 +9,43 @@ PORT=3000
 HW_WALLET_HD_PATH='"m/44'\''/1729'\''/3'\''"'
 
 # register/get public key hash for BIP32 path
-PUBLIC_KEY_HASH="$(
+public_key_hash="$(
     curl --request POST http://trezor-remote-signer:5000/register --silent \
          --header 'Content-Type: application/json' \
          --data $HW_WALLET_HD_PATH  | jq -r '.pkh' )"
 
-echo "Address: $PUBLIC_KEY_HASH  path: $HW_WALLET_HD_PATH"
 
-# tezos-client --addr $ADDRESS --port $PORT --tls set man  -v 3
-echo $(tezos-client --addr $ADDRESS --port $PORT --tls get timestamp)
-echo $(tezos-client --addr $ADDRESS --port $PORT --tls get balance for $PUBLIC_KEY_HASH)
+# tezos-client --addr $ADDRESS --port $PORT --tls transfer man -v 3
+echo "[+][remote-node] timestamp: $(tezos-client --addr $ADDRESS --port $PORT --tls get timestamp)"
+
+echo "[+][hw-wallet] address: $public_key_hash "
+echo "[+][hw-wallet] path: $HW_WALLET_HD_PATH"
+echo "[+][hw-wallet] balance: $(tezos-client --addr $ADDRESS --port $PORT --tls get balance for $public_key_hash)"
+
+#change direcotry to faucet folder
+cd "/var/tezos-client/faucet/"
+
+# activate all wallets from ./faucet direcotry
+for file in * 
+do  
+   # remove .json from filename
+   faucet_public_key_hash=${file::-5}  
+   echo -e "\n[+][wallet] activate: $faucet_public_key_hash"
+   
+   # activate wallet
+   tezos-client --addr $ADDRESS --port $PORT --tls activate account $faucet_public_key_hash with "$file" --force
+   balance=$(tezos-client --addr $ADDRESS --port $PORT --tls get balance for $faucet_public_key_hash)
+
+   # default fee for transaction
+   FEE=1
+
+   # substract fee from balance
+   balance_without_fee="$( awk  -vbalance="${balance::-4}" -vfee="$FEE" 'BEGIN{printf ("%.0f\n",balance-fee)}')"
+
+   echo -e "\n[+][wallet] balance: $balance_without_fee for: $faucet_public_key_hash"
+   
+   # transfer xtz to hw wallet address
+   tezos-client --addr $ADDRESS --port $PORT --tls transfer $balance_without_fee from $faucet_public_key_hash to $public_key_hash --fee 0.1 --fee-cap 1 --burn-cap 1
+   
+done
+

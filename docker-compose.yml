@@ -4,24 +4,24 @@ services:
   trezor-remote-signer:
     build: ./trezor-remote-signer
     hostname: trezor-remote-signer
-    entrypoint: /var/trezor-remote-signer/entrypoint.sh
     devices:
       - /dev/bus/usb/003/008
     ports:
     - "5000:5000"
     volumes:
       - ./trezor-remote-signer:/var/trezor-remote-signer
+    entrypoint: /var/trezor-remote-signer/entrypoint.sh
     # restart: on-failure
 
   tezos-client:
     build: ./tezos-client
     hostname: tezos-client
-    entrypoint: /var/tezos-client/entrypoint.sh
     environment:
       - ADDRESS=zeronet.simplestaking.com
       - PORT=3000
     volumes:
       - ./tezos-client:/var/tezos-client
+    entrypoint: /var/tezos-client/entrypoint.sh
     depends_on:
       - trezor-remote-signer
     # restart: on-failure
