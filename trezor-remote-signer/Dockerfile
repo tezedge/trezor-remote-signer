@@ -27,8 +27,8 @@ RUN pip3 install -r requirements.txt
 RUN git clone https://bitbucket.org/jurajselep/remote-signer.git --branch tezos-trezor_signer 
 
 # get repositories for trezorctl & trezorlib
-RUN git clone https://github.com/simplestaking/python-trezor.git --branch staking 
 RUN git clone https://github.com/simplestaking/trezor-common.git --branch staking_message
+RUN git clone https://github.com/simplestaking/python-trezor.git --branch staking 
 # copy trezor-common with trezor proto messages  for staking 
 RUN cp -r trezor-common python-trezor/vendor/
 

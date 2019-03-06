@@ -2,30 +2,38 @@ version: '3'
 
 services:
   trezor-remote-signer:
-    volumes:
-      - ./trezor-remote-signer:/var/trezor-remote-signer
     build: ./trezor-remote-signer
     hostname: trezor-remote-signer
     entrypoint: /var/trezor-remote-signer/entrypoint.sh
-    # devices:
-    #   - /dev/ttyUSB0
+    devices:
+      - /dev/bus/usb/003/008
+    ports:
+    - "5000:5000"
+    volumes:
+      - ./trezor-remote-signer:/var/trezor-remote-signer
     # restart: on-failure
 
   tezos-client:
-    image: tezos/tezos:zeronet
+    build: ./tezos-client
     hostname: tezos-client
     entrypoint: /var/tezos-client/entrypoint.sh
+    environment:
+      - ADDRESS=zeronet.simplestaking.com
+      - PORT=3000
     volumes:
       - ./tezos-client:/var/tezos-client
-    restart: on-failure
+    depends_on:
+      - trezor-remote-signer
+    # restart: on-failure
 
 # 0. running tezos node zeronet.simpelstaking.com
+
 # 1. run remote_signer and listen 
 # 2. check if trezor is flashed
 
 # 3. exec tezos-client from docker 
 
-# 4. get tezos addrress from trezor 
+# 4. get tezos addrres from trezor 
 
 # 5. download faucet 
 # 6. send xtz to address
@@ -33,5 +41,3 @@ services:
 # 7. import remote keys to tezos-client
 # 8. register delegate 
 # 9. start baking
-
-
