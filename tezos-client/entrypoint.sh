@@ -15,7 +15,7 @@ public_key_hash="$(
          --data $HW_WALLET_HD_PATH  | jq -r '.pkh' )"
 
 
-# tezos-client --addr $ADDRESS --port $PORT --tls transfer man -v 3
+# tezos-client --addr $ADDRESS --port $PORT --tls  man -v 3
 echo "[+][remote-node] timestamp: $(tezos-client --addr $ADDRESS --port $PORT --tls get timestamp)"
 
 echo "[+][hw-wallet] address: $public_key_hash "
@@ -49,3 +49,25 @@ do
    
 done
 
+# register HD wallet for remote signer 
+
+echo -e "\n[+][hw-wallet] import remote wallet secret key:\n$(
+    tezos-client --addr $ADDRESS --port $PORT --tls \
+    import secret key $public_key_hash http://trezor-remote-signer:5000/$public_key_hash --force
+)"
+
+echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
+    tezos-client --addr $ADDRESS --port $PORT --tls \
+    import public key $public_key_hash http://trezor-remote-signer:5000/$public_key_hash --force
+)"
+
+# register hw wallet address as delegate 
+echo -e "\n[+][hw-wallet] register delegate\n$(
+    tezos-client --addr $ADDRESS --port $PORT --tls \
+    register key $public_key_hash as delegate --fee 0.1
+)"
+
+echo -e "\n[+][hw-wallet] register delegate\n$(
+    tezos-client --addr $ADDRESS --port $PORT --tls \
+    list known addresses
+)"
