@@ -8,6 +8,9 @@ PORT=3000
 # BIP32 path for Trezor T
 HW_WALLET_HD_PATH='"m/44'\''/1729'\''/3'\''"'
 
+# wait for flask app to load in trezor-remote-signer, move flask start to Dockerfile  
+sleep 4s
+
 # register/get public key hash for BIP32 path
 public_key_hash="$(
     curl --request POST http://trezor-remote-signer:5000/register --silent \

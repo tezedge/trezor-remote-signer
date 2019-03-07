@@ -31,9 +31,9 @@ echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
     import public key $public_key_hash http://trezor-remote-signer:5000/$public_key_hash --force
 )"
 
-echo -e "\n[+][hw-wallet] launch endorser:\n$(
-    tezos-endorser-alpha man
-)"
+# echo -e "\n[+][hw-wallet] launch endorser:\n$(
+#     tezos-endorser-alpha man
+# )"
 
 echo -e "\n[+][hw-wallet] launch endorser:\n$(
     tezos-endorser-alpha --addr $ADDRESS --port $PORT --tls \
