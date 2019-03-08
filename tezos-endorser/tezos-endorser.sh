@@ -1,6 +1,9 @@
 #!/bin/sh
 export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
 
+# wait for remote signer to load, move to Docker file 
+sleep 3s 
+
 # remote Tezos node 
 ADDRESS=zeronet.simplestaking.com
 PORT=3000
@@ -36,7 +39,7 @@ echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
 # )"
 
 echo -e "\n[+][hw-wallet] launch endorser:\n$(
-    tezos-endorser-alpha --addr $ADDRESS --port $PORT --tls \
+    tezos-endorser-alpha -l --addr $ADDRESS --port $PORT --tls \
     --remote-signer http://trezor-remote-signer:5000 run
 )"
 

@@ -2,28 +2,28 @@ version: '3'
 
 services:
 
-  trezor-baking-firmware:
-    build: ./trezor-baking-firmware
-    hostname: trezor-baking-firmware
-    devices:
-      # lsusb -d 1209:53c1
-      - /dev/bus/usb/003/021
-    volumes:
-      - ./trezor-baking-firmware:/var/trezor-baking-firmware
-    entrypoint: /var/trezor-baking-firmware/trezor-baking-firmware.sh
-
-  # trezor-remote-signer:
-  #   build: ./trezor-remote-signer
-  #   hostname: trezor-remote-signer
+  # trezor-baking-firmware:
+  #   build: ./trezor-baking-firmware
+  #   hostname: trezor-baking-firmware
   #   devices:
-  #     - /dev/bus/usb/003/016
-  #   ports:
-  #   - "5000:5000"
+  #     # lsusb -d 1209:53c1
+  #     - /dev/bus/usb/003/021
   #   volumes:
-  #     - ./trezor-remote-signer:/var/trezor-remote-signer
-  #   entrypoint: /var/trezor-remote-signer/remote-signer.sh
-  #   depends_on:
-  #     - trezor-baking-firmware
+  #     - ./trezor-baking-firmware:/var/trezor-baking-firmware
+  #   entrypoint: /var/trezor-baking-firmware/trezor-baking-firmware.sh
+
+  trezor-remote-signer:
+    build: ./trezor-remote-signer
+    hostname: trezor-remote-signer
+    devices:
+      - /dev/bus/usb/003/022
+    ports:
+    - "5000:5000"
+    volumes:
+      - ./trezor-remote-signer:/var/trezor-remote-signer
+    entrypoint: /var/trezor-remote-signer/remote-signer.sh
+    # depends_on:
+    #   - trezor-baking-firmware
 
   # tezos-client:
   #   build: ./tezos-client
@@ -37,15 +37,15 @@ services:
   #   depends_on:
   #     - trezor-remote-signer
 
-  # tezos-endorser:
-  #   build: ./tezos-endorser
-  #   hostname: tezos-endorser
-  #   volumes:
-  #     - ./tezos-endorser:/var/tezos-endorser
-  #   entrypoint: /var/tezos-endorser/tezos-endorser.sh
-  #   depends_on:
-  #     - trezor-remote-signer
-  #   # restart: on-failure
+  tezos-endorser:
+    build: ./tezos-endorser
+    hostname: tezos-endorser
+    volumes:
+      - ./tezos-endorser:/var/tezos-endorser
+    entrypoint: /var/tezos-endorser/tezos-endorser.sh
+    depends_on:
+      - trezor-remote-signer
+    # restart: on-failure
 
 
 
