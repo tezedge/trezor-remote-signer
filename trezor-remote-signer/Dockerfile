@@ -23,7 +23,6 @@ RUN \
 COPY requirements.txt /
 RUN pip3 install -r requirements.txt
 
-
 # get repositories for trezorctl & trezorlib
 RUN git clone https://github.com/simplestaking/trezor-common.git --branch staking_message
 RUN git clone https://github.com/simplestaking/python-trezor.git --branch staking 

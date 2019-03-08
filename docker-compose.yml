@@ -1,30 +1,41 @@
 version: '3'
 
 services:
-  trezor-remote-signer:
-    build: ./trezor-remote-signer
-    hostname: trezor-remote-signer
-    devices:
-      - /dev/bus/usb/003/016
-    ports:
-    - "5000:5000"
-    volumes:
-      - ./trezor-remote-signer:/var/trezor-remote-signer
-    entrypoint: /var/trezor-remote-signer/remote-signer.sh
-    # restart: on-failure
 
-  tezos-client:
-    build: ./tezos-client
-    hostname: tezos-client
-    environment:
-      - ADDRESS=zeronet.simplestaking.com
-      - PORT=3000
+  trezor-baking-firmware:
+    build: ./trezor-baking-firmware
+    hostname: trezor-baking-firmware
+    devices:
+      # lsusb -d 1209:53c1
+      - /dev/bus/usb/003/021
     volumes:
-      - ./tezos-client:/var/tezos-client
-    entrypoint: /var/tezos-client/tezos-client.sh
-    depends_on:
-      - trezor-remote-signer
-    # restart: on-failure
+      - ./trezor-baking-firmware:/var/trezor-baking-firmware
+    entrypoint: /var/trezor-baking-firmware/trezor-baking-firmware.sh
+
+  # trezor-remote-signer:
+  #   build: ./trezor-remote-signer
+  #   hostname: trezor-remote-signer
+  #   devices:
+  #     - /dev/bus/usb/003/016
+  #   ports:
+  #   - "5000:5000"
+  #   volumes:
+  #     - ./trezor-remote-signer:/var/trezor-remote-signer
+  #   entrypoint: /var/trezor-remote-signer/remote-signer.sh
+  #   depends_on:
+  #     - trezor-baking-firmware
+
+  # tezos-client:
+  #   build: ./tezos-client
+  #   hostname: tezos-client
+  #   environment:
+  #     - ADDRESS=zeronet.simplestaking.com
+  #     - PORT=3000
+  #   volumes:
+  #     - ./tezos-client:/var/tezos-client
+  #   entrypoint: /var/tezos-client/tezos-client.sh
+  #   depends_on:
+  #     - trezor-remote-signer
 
   # tezos-endorser:
   #   build: ./tezos-endorser
@@ -35,6 +46,10 @@ services:
   #   depends_on:
   #     - trezor-remote-signer
   #   # restart: on-failure
+
+
+
+
 
 
 # 0. running tezos node zeronet.simpelstaking.com
