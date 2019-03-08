@@ -8,6 +8,9 @@ trezorctl list
 # trezorctl list
 # enable blood owner few exist much identify shadow online tobacco leave forward
 
+# set trezor pin 
+#trezorctl change-pin
+
 export FLASK_APP=signer.py
 export FLASK_ENV=development
 cd ./remote-signer

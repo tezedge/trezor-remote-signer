@@ -17,6 +17,9 @@ public_key_hash="$(
          --header 'Content-Type: application/json' \
          --data $HW_WALLET_HD_PATH  | jq -r '.pkh' )"
 
+# start staking
+"$(curl --request GET http://trezor-remote-signer:5000/start_staking --silent \
+         --header 'Content-Type: application/json' )"
 
 
 echo "[+][hw-wallet] address: $public_key_hash "

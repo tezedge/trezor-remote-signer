@@ -33,7 +33,7 @@ RUN cp -r trezor-common python-trezor/vendor/
 RUN cd python-trezor && python setup.py develop 
 
 # get remote signer repository
-RUN git clone https://bitbucket.org/jurajselep/remote-signer.git --branch tezos-trezor_signer #4
+RUN git clone https://bitbucket.org/jurajselep/remote-signer.git --branch tezos-trezor_signer #6
 
 
 # CMD ["gunicorn", "-b", "0.0.0.0:5000", "-w", "4", "signer:app"]

@@ -24,6 +24,7 @@ ls -la trezor-core/build/firmware
 trezorctl firmware-update --filename /tmp/trezor-core/build/firmware/firmware.bin --skip-vendor-header "simplestaking.com"
 
 
+
 #3f0e3a33
 
 # custom firmware 
