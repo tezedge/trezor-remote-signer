@@ -2,7 +2,7 @@
 export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
 
 # wait for remote signer to load, move to Docker file 
-sleep 3s 
+sleep 5s 
 
 # remote Tezos node 
 ADDRESS=zeronet.simplestaking.com
@@ -16,10 +16,6 @@ public_key_hash="$(
     curl --request POST http://trezor-remote-signer:5000/register --silent \
          --header 'Content-Type: application/json' \
          --data $HW_WALLET_HD_PATH  | jq -r '.pkh' )"
-
-# start staking
-"$(curl --request GET http://trezor-remote-signer:5000/start_staking --silent \
-         --header 'Content-Type: application/json' )"
 
 
 echo "[+][hw-wallet] address: $public_key_hash "
@@ -37,12 +33,17 @@ echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
     import public key $public_key_hash http://trezor-remote-signer:5000/$public_key_hash --force
 )"
 
+
+# start staking !!! only before 
+"$(curl --request GET http://trezor-remote-signer:5000/start_staking --silent \
+         --header 'Content-Type: application/json' )"
+
 # echo -e "\n[+][hw-wallet] launch endorser:\n$(
 #     tezos-endorser-alpha man
 # )"
 
 echo -e "\n[+][hw-wallet] launch endorser:\n$(
-    tezos-endorser-alpha -l --addr $ADDRESS --port $PORT --tls \
+    tezos-endorser-alpha --addr $ADDRESS --port $PORT --tls \
     --remote-signer http://trezor-remote-signer:5000 run
 )"
 
