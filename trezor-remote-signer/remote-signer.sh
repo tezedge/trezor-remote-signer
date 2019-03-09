@@ -1,9 +1,8 @@
 #!/bin/sh
 echo "Trezor remote singner"
 
-
 trezorctl list
-trezorctl tezos-get-address --address "m/44'/1729'/3'"
+# trezorctl tezos-get-address --address "m/44'/1729'/3'"
 
 # trezorctl wipe-device
 # trezorctl list
