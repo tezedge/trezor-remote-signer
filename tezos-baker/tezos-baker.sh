@@ -27,6 +27,10 @@ public_key_hash="$(
 
 echo "[+][hw-wallet] address: $public_key_hash "
 
+# stop staking
+"$(curl --request GET http://trezor-remote-signer:5000/start_staking --silent \
+         --header 'Content-Type: application/json' )"
+
 echo -e "\n[+][hw-wallet] launch baker:\n$(
     tezos-baker-alpha --addr $ADDRESS --port $PORT --tls --remote-signer http://trezor-remote-signer:5000 run with local node /var/tezos-node $public_key_hash   
 )"
