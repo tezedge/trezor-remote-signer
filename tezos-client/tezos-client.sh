@@ -5,6 +5,9 @@ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
 ADDRESS=zeronet.simplestaking.com
 PORT=3000
 
+# docker is not waiting for remote signer to boot up move code fron entry to docker file 
+sleep 4s
+
 # BIP32 path for Trezor T
 HW_WALLET_HD_PATH='"m/44'\''/1729'\''/3'\''"'
 

@@ -15,9 +15,9 @@ services:
   trezor-remote-signer:
     build: ./trezor-remote-signer
     hostname: trezor-remote-signer
-    # devices:
-    # - /dev/bus/usb/003/012
-    network_mode: "host"
+    devices:
+    - /dev/bus/usb/003/005
+    # network_mode: "host"
     ports:
     - "5000:5000"
     volumes:
@@ -41,7 +41,7 @@ services:
   tezos-endorser:
     build: ./tezos-endorser
     hostname: tezos-endorser
-    network_mode: "host"
+    # network_mode: "host"
     volumes:
       - ./tezos-endorser:/var/tezos-endorser
     entrypoint: /var/tezos-endorser/tezos-endorser.sh
