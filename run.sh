@@ -1,5 +1,30 @@
 #!/bin/sh
 
+
+# find connected Trezor T device
+find_trezor_usb() {
+
+    # get Trezor T USB path    
+    TREZOR="$(lsusb -d $1 | awk '{print $2,$4}' | tr ' ' '/' | tr -d ':')"
+    TREZOR_USB_PATH="/dev/bus/usb/${TREZOR}"
+
+    # check if Trezor T is connected to pc
+    if [ -z $TREZOR ]; then
+        echo "[-][ERROR] Please connect Trezor T"
+        exit 0;
+    fi
+
+    # check if path to USB exists
+    if ! [ -e $TREZOR_USB_PATH ]; then
+        echo "[-][ERROR] Path $TREZOR_USB_PATH to USB device not found."
+        echo "[-][ERROR] Please change TREZOR_USB_PATH so it reflect your OS.\n"
+        exit 0;
+    fi
+
+    # export variable for docker-compose
+    export TREZOR_USB_PATH
+}
+
 # upload firmwate with Tesos baking support to Trezor T device 
 upload_firmware(){
 
@@ -20,36 +45,33 @@ upload_firmware(){
             exit 0
         fi
         
-        # get Trezor T usb path    
-        TREZOR_BOOTLOADER="$(lsusb -d 1209:53c0 | awk '{print $2,$4}' | tr ' ' '/' | tr -d ':')"
-        TREZOR_BOOTLOADER_USB_PATH="/dev/bus/usb/${TREZOR_BOOTLOADER}"
-     
-        # check if Trezor T is in bootloader mode and connected to pc
-        if [ -z $TREZOR_BOOTLOADER ]; then
-            echo "[-][ERROR] Please turn on bootloader mode and connect Trezor T"
-            exit 0;
-        fi
+        # find connected Trezor T device in bootloader mode 
+        find_trezor_usb "1209:53c0"
 
-        # check if path to USB exists
-        if ! [ -e $TREZOR_BOOTLOADER_USB_PATH ]; then
-            echo "[-][ERROR] Path $TREZOR_BOOTLOADER_USB_PATH to USB device not found."
-            echo "[-][ERROR] Please change TREZOR_BOOTLOADER_USB_PATH so it reflect your OS.\n"
-            exit 0;
-        fi
-
-        # export variable for docker-compose
-        export TREZOR_BOOTLOADER_USB_PATH
         # launch docker-compose
         docker-compose -f docker-compose.firmware.yml up
 }
 
 
 initialize() {
+
+    echo "1. download faucets from https://faucet.tzalpha.net/"
+    echo "2. save it to ./tezos-client/faucet"
+    echo "3. register delegate"
+    echo "4. import delegator address to remote signer\n"
+
+    # find connected Trezor T device
+    find_trezor_usb "1209:53c1"
+
     # launch docker-compose
     docker-compose -f docker-compose.initialize.yml up
 }
 
 start_baking() {
+
+    # find connected Trezor T device
+    find_trezor_usb "1209:53c1"
+
     # launch docker-compose
     docker-compose -f docker-compose.baking.yml up
 }
@@ -70,7 +92,7 @@ while :; do
         ;;
 
     -s|--start)
-        echo "Start banking & endorsing\n";
+        echo "\033[1;37mStart banking & endorsing\e[0m\n";
         start_baking
         ;;
 

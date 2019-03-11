@@ -38,7 +38,7 @@ echo "[+][remote-node] timestamp: $(tezos-client --addr $ADDRESS --port $PORT --
 cd "/var/tezos-client/faucet/"
 
 # activate all wallets from ./faucet direcotry
-for file in *
+for file in *.json
 do  
    # remove .json from filename
    faucet_public_key_hash=${file::-5}  

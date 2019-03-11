@@ -7,41 +7,43 @@ sleep 5s
 # remote Tezos node 
 ADDRESS=zeronet.simplestaking.com
 PORT=3000
-# ADDRESS=0.0.0.0
-# PORT=8732
 TLS='--tls'
 
-# SIGNER_ADDRESS=trezor-remote-signer
-SIGNER_ADDRESS=localhost
+# signer node 
+SIGNER_ADDRESS=trezor-remote-signer
 SIGNER_PORT=5000
 
 # BIP32 path for Trezor T
 HW_WALLET_HD_PATH='"m/44'\''/1729'\''/3'\''"'
 
 # stop staking
-"$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/stop_staking \
+"$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/stop_staking --silent \
          --header 'Content-Type: application/json' )"
 
 # register/get public key hash for BIP32 path
-public_key_hash="$(
+PUBLIC_KEY_HASH="$(
     curl --request POST http://$SIGNER_ADDRESS:$SIGNER_PORT/register --silent \
          --header 'Content-Type: application/json' \
          --data $HW_WALLET_HD_PATH  | jq -r '.pkh' )"
 
+if [ -z $PUBLIC_KEY_HASH ]; then
+    echo "[-][ERROR]Can not get Tezos address for $HW_WALLET_HD_PATH"
+    exit 0;
+fi
 
-echo "[+][hw-wallet] address: $public_key_hash "
+echo "[+][hw-wallet] address: $PUBLIC_KEY_HASH "
 echo "[+][hw-wallet] path: $HW_WALLET_HD_PATH"
-echo "[+][hw-wallet] balance: $(tezos-client --addr $ADDRESS --port $PORT $TLS get balance for $public_key_hash)"
+echo "[+][hw-wallet] balance: $(tezos-client --addr $ADDRESS --port $PORT $TLS get balance for $PUBLIC_KEY_HASH)"
 
 # register HD wallet for remote signer 
 echo -e "\n[+][hw-wallet] import remote wallet secret key:\n$(
     tezos-client --addr $ADDRESS --port $PORT $TLS \
-    import secret key $public_key_hash http://$SIGNER_ADDRESS:$SIGNER_PORT/$public_key_hash --force
+    import secret key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
 )"
 
 echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
     tezos-client --addr $ADDRESS --port $PORT $TLS \
-    import public key $public_key_hash http://$SIGNER_ADDRESS:$SIGNER_PORT/$public_key_hash --force
+    import public key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
 )"
 
 
