@@ -1,3 +1,11 @@
+## Minimal requirements : ## 
+
+* docker 
+* docker-compose 
+* tezos-node  
+
+## Start ## 
+
 ```
 docker-compose up
 ```
@@ -6,16 +14,18 @@ docker-compose up
 docker exec 2502d335f68d /bin/sh -c "trezorctl list"
 ```
 
+### Donload data from running node  ### 
 
 
 Stop zeronet node otherwise data will be not usable
 
-````
+```
 ./zeronet.sh stop
-
 ```
 
 Copy data from docker directory
+
+
 
 ```
 /var/lib/docker/volumes/zeronet_node_data/_data/data/store

@@ -2,16 +2,6 @@ version: '3'
 
 services:
 
-  # trezor-baking-firmware:
-  #   build: ./trezor-baking-firmware
-  #   hostname: trezor-baking-firmware
-  #   devices:
-  #     # lsusb -d 1209:53c1
-  #     - /dev/bus/usb/003/010
-  #   volumes:
-  #     - ./trezor-baking-firmware:/var/trezor-baking-firmware
-  #   entrypoint: /var/trezor-baking-firmware/trezor-baking-firmware.sh
-
   trezor-remote-signer:
     build: ./trezor-remote-signer
     hostname: trezor-remote-signer

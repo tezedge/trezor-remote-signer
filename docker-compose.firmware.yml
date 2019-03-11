@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+
+  trezor-baking-firmware:
+    build: ./trezor-baking-firmware
+    hostname: trezor-baking-firmware
+    devices:
+      # lsusb -d 1209:53c0
+      - ${TREZOR_BOOTLOADER_USB_PATH}
+    volumes:
+      - ./trezor-baking-firmware:/var/trezor-baking-firmware
+    entrypoint: /var/trezor-baking-firmware/trezor-baking-firmware.sh
