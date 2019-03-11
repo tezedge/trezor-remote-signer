@@ -8,6 +8,8 @@ sleep 5s
 "$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/stop_staking --silent \
          --header 'Content-Type: application/json' )"
 
+sleep 5s 
+
 # register/get public key hash for BIP32 path
 PUBLIC_KEY_HASH="$(
     curl --request POST http://$SIGNER_ADDRESS:$SIGNER_PORT/register --silent \
