@@ -1,37 +1,33 @@
 #!/bin/sh
 export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
 
+# change permissions
 chmod 755 /var/tezos-node
 ls -la /var/tezos-node
 
 # wait for remote signer to load, move to Docker file 
 sleep 3s 
 
-# remote Tezos node 
-ADDRESS=zeronet.simplestaking.com
-PORT=3000
-
-# BIP32 path for Trezor T
-HW_WALLET_HD_PATH='"m/44'\''/1729'\''/3'\''"'
-
+# staking is started by endorser already
 # stop staking
-"$(curl --request GET http://trezor-remote-signer:5000/stop_staking --silent \
+"$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/stop_staking --silent \
          --header 'Content-Type: application/json' )"
 
 
 # register/get public key hash for BIP32 path
-public_key_hash="$(
-    curl --request POST http://trezor-remote-signer:5000/register --silent \
+PUBLIC_KEY_HASH="$(
+    curl --request POST http://$SIGNER_ADDRESS:$SIGNER_PORT/register --silent \
          --header 'Content-Type: application/json' \
          --data $HW_WALLET_HD_PATH  | jq -r '.pkh' )"
 
-echo "[+][hw-wallet] address: $public_key_hash "
+echo "[+][hw-wallet] address: $PUBLIC_KEY_HASH "
 
+# staking is started by endorser already
 # stop staking
-"$(curl --request GET http://trezor-remote-signer:5000/start_staking --silent \
+"$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/start_staking --silent \
          --header 'Content-Type: application/json' )"
 
 echo -e "\n[+][hw-wallet] launch baker:\n$(
-    tezos-baker-alpha --addr $ADDRESS --port $PORT --tls --remote-signer http://trezor-remote-signer:5000 run with local node /var/tezos-node $public_key_hash   
+    tezos-baker-alpha --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS --remote-signer http://$SIGNER_ADDRESS:$SIGNER_PORT run with local node /var/tezos-node $PUBLIC_KEY_HASH   
 )"
 

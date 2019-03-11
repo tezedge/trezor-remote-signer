@@ -8,31 +8,36 @@ services:
     devices:
       # lsusb -d 1209:53c1
       - ${TREZOR_USB_PATH}
-    # network_mode: "host"
     ports:
     - "5000:5000"
     volumes:
       - ./trezor-remote-signer:/var/trezor-remote-signer
     entrypoint: /var/trezor-remote-signer/remote-signer.sh
-
-  tezos-endorser:
-    build: ./tezos-endorser
-    hostname: tezos-endorser
     # network_mode: "host"
-    volumes:
-      - ./tezos-endorser:/var/tezos-endorser
-    entrypoint: /var/tezos-endorser/tezos-endorser.sh
-    depends_on:
-      - trezor-remote-signer
-    # restart: on-failure
 
-  # tezos-baker:
-  #   build: ./tezos-baker
-  #   hostname: tezos-baker
+  # tezos-endorser:
+  #   build: ./tezos-endorser
+  #   hostname: tezos-endorser
+  #   env_file:
+  #     - ./config.baking.env
   #   volumes:
-  #     - ./tezos-baker:/var/tezos-baker
-  #     - /home/juchuchu/.tezos-node:/var/tezos-node
-  #   entrypoint: /var/tezos-baker/tezos-baker.sh
+  #     - ./tezos-endorser:/var/tezos-endorser
+  #   entrypoint: /var/tezos-endorser/tezos-endorser.sh
   #   depends_on:
   #     - trezor-remote-signer
+  #   # network_mode: "host"
   #   # restart: on-failure
+
+  tezos-baker:
+    build: ./tezos-baker
+    hostname: tezos-baker
+    env_file:
+      - ./config.baking.env
+    volumes:
+      - ./tezos-baker:/var/tezos-baker
+      - /home/juchuchu/.tezos-node:/var/tezos-node
+    entrypoint: /var/tezos-baker/tezos-baker.sh
+    depends_on:
+      - trezor-remote-signer
+
+    # restart: on-failure

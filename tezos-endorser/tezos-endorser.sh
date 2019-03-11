@@ -4,18 +4,6 @@ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
 # wait for remote signer to load, move to Docker file 
 sleep 5s 
 
-# remote Tezos node 
-ADDRESS=zeronet.simplestaking.com
-PORT=3000
-TLS='--tls'
-
-# signer node 
-SIGNER_ADDRESS=trezor-remote-signer
-SIGNER_PORT=5000
-
-# BIP32 path for Trezor T
-HW_WALLET_HD_PATH='"m/44'\''/1729'\''/3'\''"'
-
 # stop staking
 "$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/stop_staking --silent \
          --header 'Content-Type: application/json' )"
@@ -33,16 +21,16 @@ fi
 
 echo "[+][hw-wallet] address: $PUBLIC_KEY_HASH "
 echo "[+][hw-wallet] path: $HW_WALLET_HD_PATH"
-echo "[+][hw-wallet] balance: $(tezos-client --addr $ADDRESS --port $PORT $TLS get balance for $PUBLIC_KEY_HASH)"
+echo "[+][hw-wallet] balance: $(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get balance for $PUBLIC_KEY_HASH)"
 
 # register HD wallet for remote signer 
 echo -e "\n[+][hw-wallet] import remote wallet secret key:\n$(
-    tezos-client --addr $ADDRESS --port $PORT $TLS \
+    tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     import secret key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
 )"
 
 echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
-    tezos-client --addr $ADDRESS --port $PORT $TLS \
+    tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     import public key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
 )"
 
@@ -56,7 +44,7 @@ echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
 # )"
 
 echo -e "\n[+][hw-wallet] launch endorser:\n$(
-    tezos-endorser-alpha --addr $ADDRESS --port $PORT $TLS \
+    tezos-endorser-alpha --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     --remote-signer http://$SIGNER_ADDRESS:$SIGNER_PORT run
 )"
 

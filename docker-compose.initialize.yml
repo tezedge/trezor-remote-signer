@@ -18,7 +18,7 @@ services:
     build: ./tezos-client
     hostname: tezos-client
     env_file:
-      - ./docker-compose.initialize.env
+      - ./config.initialize.env
     volumes:
       - ./tezos-client:/var/tezos-client
     entrypoint: /var/tezos-client/tezos-client.sh
