@@ -75,6 +75,17 @@ start_baking() {
     docker-compose -f docker-compose.baking.yml up
 }
 
+start_baking_debug() {
+
+    # use Trezor emulator form trezor-core
+    
+    # find connected Trezor T device
+    # find_trezor_usb "1209:53c1"
+
+    # launch docker-compose
+    docker-compose -f docker-compose.debug.yml up
+}
+
 
 #  cli
 while :; do
@@ -95,6 +106,11 @@ while :; do
         start_baking
         ;;
 
+    -d|--debug)
+        echo "\033[1;37mStart banking & endorsing indebug mode \e[0m\n";
+        start_baking_debug
+        ;;
+
     -h|--help)
         echo "Usage:"
         echo "run.sh [OPTION]\n"
@@ -102,6 +118,7 @@ while :; do
         echo " -u,  --upload-firmware   upload firmware with support for Tezos baking on Trezor T"
         echo " -i,  --initialize        activate faucets accounts, register delegate & import delegator address to remote signer"
         echo " -s,  --start             start baking and endorsing"
+        echo " -d,  --debug             debug mode suited for development"
         echo " -h,  --help              display this message"
         exit 0
         ;;
