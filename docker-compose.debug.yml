@@ -15,27 +15,28 @@ services:
     entrypoint: /var/trezor-remote-signer/remote-signer.sh
     network_mode: "host"
 
-  tezos-endorser:
-    build: ./tezos-endorser
-    hostname: tezos-endorser
-    env_file:
-      - ./config.debug.env
-    volumes:
-      - ./tezos-endorser:/var/tezos-endorser
-    entrypoint: /var/tezos-endorser/tezos-endorser.sh
-    depends_on:
-      - trezor-remote-signer
-    network_mode: "host"
-    
-  # tezos-baker:
-  #   build: ./tezos-baker
-  #   hostname: tezos-baker
+  # tezos-endorser:
+  #   build: ./tezos-endorser
+  #   hostname: tezos-endorser
   #   env_file:
   #     - ./config.debug.env
   #   volumes:
-  #     - ./tezos-baker:/var/tezos-baker
-  #     - /home/juchuchu/.tezos-node:/var/tezos-node
-  #   entrypoint: /var/tezos-baker/tezos-baker.sh
+  #     - ./tezos-endorser:/var/tezos-endorser
+  #   entrypoint: /var/tezos-endorser/tezos-endorser.sh
   #   depends_on:
   #     - trezor-remote-signer
-  # restart: on-failure
+  #   network_mode: "host"
+    
+  tezos-baker:
+    build: ./tezos-baker
+    hostname: tezos-baker
+    env_file:
+      - ./config.debug.env
+    volumes:
+      - ./tezos-baker:/var/tezos-baker
+      - /home/juchuchu/.tezos-node:/var/tezos-node
+    entrypoint: /var/tezos-baker/tezos-baker.sh
+    network_mode: "host"
+    depends_on:
+      - trezor-remote-signer
+    # restart: on-failure
