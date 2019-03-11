@@ -4,7 +4,22 @@
 * docker-compose 
 * tezos-node  
 
-## Start ## 
+## Steps ##
+
+ 1. run remote_signer and listen 
+ 2. check if trezor is flashed
+
+ 3. exec tezos-client from docker 
+
+ 4. get tezos addrres from trezor 
+
+ 5. download faucet 
+ 6. send xtz to address
+
+ 7. import remote keys to tezos-client
+ 8. register delegate 
+
+ 9. start baking 
 
 ```
 docker-compose up

@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+  trezor-remote-signer:
+    build: ./trezor-remote-signer
+    hostname: trezor-remote-signer
+    devices:
+    - /dev/bus/usb/003/005
+    # network_mode: "host"
+    ports:
+    - "5000:5000"
+    volumes:
+      - ./trezor-remote-signer:/var/trezor-remote-signer
+    entrypoint: /var/trezor-remote-signer/remote-signer.sh
+
+  tezos-client:
+    build: ./tezos-client
+    hostname: tezos-client
+    environment:
+      - ADDRESS=zeronet.simplestaking.com
+      - PORT=3000
+    volumes:
+      - ./tezos-client:/var/tezos-client
+    entrypoint: /var/tezos-client/tezos-client.sh
+    depends_on:
+      - trezor-remote-signer
+
+
+
+
+
+
+
+

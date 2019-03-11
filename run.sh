@@ -44,6 +44,17 @@ upload_firmware(){
 }
 
 
+initialize() {
+    # launch docker-compose
+    docker-compose -f docker-compose.initialize.yml up
+}
+
+start_baking() {
+    # launch docker-compose
+    docker-compose -f docker-compose.baking.yml up
+}
+
+
 #  cli
 while :; do
   case $1 in
@@ -54,18 +65,20 @@ while :; do
         ;;
 
     -i|--initialize)
-        echo "Initialize baking on Tezos";
+        echo "\033[1;37mInitialize baking on Tezos\e[0m\n";
+        initialize
         ;;
 
     -s|--start)
         echo "Start banking & endorsing\n";
+        start_baking
         ;;
 
     -h|--help)
         echo "Usage:"
         echo "run.sh [OPTION]\n"
         echo "Set of tools for baking on Tezos with Trezor T support \n"
-        echo " -u,  --upload-firmware   upload firmware with support for 'baking mode' on Trezor T"
+        echo " -u,  --upload-firmware   upload firmware with support for Tezos baking on Trezor T"
         echo " -i,  --initialize        activate faucets accounts, register delegate & import delegator address to remote signer"
         echo " -s,  --start             start baking and endorsing"
         echo " -h,  --help              display this message"
