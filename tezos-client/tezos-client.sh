@@ -1,38 +1,34 @@
 #!/bin/sh
-export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
 
-# remote Tezos node 
-ADDRESS=zeronet.simplestaking.com
-PORT=3000
+export
 
 # docker is not waiting for remote signer to boot up move code fron entry to docker file 
 sleep 4s
 
-# BIP32 path for Trezor T
-HW_WALLET_HD_PATH='"m/44'\''/1729'\''/3'\''"'
-
 # stop staking
-"$(curl --request GET http://trezor-remote-signer:5000/stop_staking --silent \
+"$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/stop_staking --silent \
          --header 'Content-Type: application/json' )"
-
 
 # wait for flask app to load in trezor-remote-signer, move flask start to Dockerfile  
 sleep 4s
 
 # register/get public key hash for BIP32 path
-public_key_hash="$(
-    curl --request POST http://trezor-remote-signer:5000/register --silent \
+PUBLIC_KEY_HASH="$(
+    curl --request POST http://$SIGNER_ADDRESS:$SIGNER_PORT/register --silent \
          --header 'Content-Type: application/json' \
          --data $HW_WALLET_HD_PATH  | jq -r '.pkh' )"
 
-sleep 3s
+if [ -z $PUBLIC_KEY_HASH ]; then
+    echo "[-][ERROR] Can not get Tezos address for $HW_WALLET_HD_PATH"
+    exit 0;
+fi
 
-echo "[+][hw-wallet] address: $public_key_hash "
+echo "[+][hw-wallet] address: $PUBLIC_KEY_HASH "
 echo "[+][hw-wallet] path: $HW_WALLET_HD_PATH"
-echo "[+][hw-wallet] balance: $(tezos-client --addr $ADDRESS --port $PORT --tls get balance for $public_key_hash)"
+echo "[+][hw-wallet] balance: $(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get balance for $PUBLIC_KEY_HASH)"
 
-# tezos-client --addr $ADDRESS --port $PORT --tls  man -v 3
-echo "[+][remote-node] timestamp: $(tezos-client --addr $ADDRESS --port $PORT --tls get timestamp)"
+# tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS  man -v 3
+echo "[+][remote-node] timestamp: $(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get timestamp)"
 
 #change direcotry to faucet folder
 cd "/var/tezos-client/faucet/"
@@ -40,46 +36,48 @@ cd "/var/tezos-client/faucet/"
 # activate all wallets from ./faucet direcotry
 for file in *.json
 do  
-   # remove .json from filename
-   faucet_public_key_hash=${file::-5}  
-   echo -e "\n[+][wallet] activate: $faucet_public_key_hash"
-   
-   # activate wallet
-   tezos-client --addr $ADDRESS --port $PORT --tls activate account $faucet_public_key_hash with "$file" --force
-   balance=$(tezos-client --addr $ADDRESS --port $PORT --tls get balance for $faucet_public_key_hash)
+    # check if file exist
+    if [ -f "$file" ];then
+        # remove .json from filename
+        FAUCET_PUBLIC_KEY_HASH=${file::-5}  
+        echo -e "\n[+][wallet] activate: $FAUCET_PUBLIC_KEY_HASH"
+        
+        # activate wallet
+        tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS activate account $FAUCET_PUBLIC_KEY_HASH with "$file" --force
+        balance=$(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get balance for $FAUCET_PUBLIC_KEY_HASH)
 
-   # default fee for transaction
-   FEE=1
+        # default fee for transaction
+        FEE=1
 
-   # substract fee from balance
-   balance_without_fee="$( awk  -vbalance="${balance::-4}" -vfee="$FEE" 'BEGIN{printf ("%.0f\n",balance-fee)}')"
+        # substract fee from balance
+        balance_without_fee="$( awk  -vbalance="${balance::-4}" -vfee="$FEE" 'BEGIN{printf ("%.0f\n",balance-fee)}')"
 
-   echo -e "\n[+][wallet] balance: $balance_without_fee for: $faucet_public_key_hash"
-   
-   # transfer xtz to hw wallet address
-   tezos-client --addr $ADDRESS --port $PORT --tls transfer $balance_without_fee from $faucet_public_key_hash to $public_key_hash --fee 0.1 --fee-cap 1 --burn-cap 1
-   
+        echo -e "\n[+][wallet] balance: $balance_without_fee for: $FAUCET_PUBLIC_KEY_HASH"
+        
+        # transfer xtz to hw wallet address
+        tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS transfer $balance_without_fee from $FAUCET_PUBLIC_KEY_HASH to $PUBLIC_KEY_HASH --fee 0.1 --fee-cap 1 --burn-cap 1
+    fi
 done
 
+
 # register HD wallet for remote signer 
-
 echo -e "\n[+][hw-wallet] import remote wallet secret key:\n$(
-    tezos-client --addr $ADDRESS --port $PORT --tls \
-    import secret key $public_key_hash http://trezor-remote-signer:5000/$public_key_hash --force
+    tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
+    import secret key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
+)"
+echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
+    tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
+    import public key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
 )"
 
-echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
-    tezos-client --addr $ADDRESS --port $PORT --tls \
-    import public key $public_key_hash http://trezor-remote-signer:5000/$public_key_hash --force
-)"
 
 # register hw wallet address as delegate 
 echo -e "\n[+][hw-wallet] register delegate\n$(
-    tezos-client --addr $ADDRESS --port $PORT --tls \
-    register key $public_key_hash as delegate --fee 0.1
+    tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
+    register key $PUBLIC_KEY_HASH as delegate --fee 0.1
 )"
 
 echo -e "\n[+][hw-wallet] register delegate\n$(
-    tezos-client --addr $ADDRESS --port $PORT --tls \
+    tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     list known addresses
 )"

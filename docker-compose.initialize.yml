@@ -1,14 +1,13 @@
 version: '3'
 
 services:
-
+  
   trezor-remote-signer:
     build: ./trezor-remote-signer
     hostname: trezor-remote-signer
     devices:
       # lsusb -d 1209:53c1
       - ${TREZOR_USB_PATH}
-    # network_mode: "host"
     ports:
     - "5000:5000"
     volumes:
@@ -18,9 +17,8 @@ services:
   tezos-client:
     build: ./tezos-client
     hostname: tezos-client
-    environment:
-      - ADDRESS=zeronet.simplestaking.com
-      - PORT=3000
+    env_file:
+      - ./docker-compose.initialize.env
     volumes:
       - ./tezos-client:/var/tezos-client
     entrypoint: /var/tezos-client/tezos-client.sh

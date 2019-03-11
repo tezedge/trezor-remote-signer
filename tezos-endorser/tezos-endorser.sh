@@ -27,7 +27,7 @@ PUBLIC_KEY_HASH="$(
          --data $HW_WALLET_HD_PATH  | jq -r '.pkh' )"
 
 if [ -z $PUBLIC_KEY_HASH ]; then
-    echo "[-][ERROR]Can not get Tezos address for $HW_WALLET_HD_PATH"
+    echo "[-][ERROR] Can not get Tezos address for $HW_WALLET_HD_PATH"
     exit 0;
 fi
 

@@ -1,11 +1,8 @@
 #!/bin/sh
 
-# BIP32 path for Trezor T
-HW_WALLET_HD_PATH="m/44'/1729'/3'"
-
 trezorctl list
 trezorctl get-features
-# trezorctl tezos-get-address --address $HW_WALLET_HD_PATH
+# trezorctl tezos-get-address --address "m/44'/1729'/3'"
 
 # rm -rf /tmp/trezor-core/build
 

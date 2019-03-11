@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 # find connected Trezor T device
 find_trezor_usb() {
 

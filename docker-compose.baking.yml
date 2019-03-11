@@ -14,8 +14,6 @@ services:
     volumes:
       - ./trezor-remote-signer:/var/trezor-remote-signer
     entrypoint: /var/trezor-remote-signer/remote-signer.sh
-    # depends_on:
-    #   - trezor-baking-firmware
 
   tezos-endorser:
     build: ./tezos-endorser
