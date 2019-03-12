@@ -24,8 +24,10 @@ fi
 echo "[+][hw-wallet] address: $PUBLIC_KEY_HASH "
 echo "[+][hw-wallet] path: $HW_WALLET_HD_PATH"
 echo "[+][hw-wallet] balance: $(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get balance for $PUBLIC_KEY_HASH)"
+echo "[+][hw-wallet] delegate: $(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get delegate for $PUBLIC_KEY_HASH)"
 
 # register HD wallet for remote signer 
+# !!!!!!!! this is only included in local container, never in remote client  
 echo -e "\n[+][hw-wallet] import remote wallet secret key:\n$(
     tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     import secret key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force

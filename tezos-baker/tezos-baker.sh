@@ -22,7 +22,8 @@ PUBLIC_KEY_HASH="$(
 
 echo "[+][hw-wallet] address: $PUBLIC_KEY_HASH "
 
-# register HD wallet for remote signer 
+# register HD wallet for remote signer
+# !!! credentials are saved in local container  
 echo -e "\n[+][hw-wallet] import remote wallet secret key:\n$(
     tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     import secret key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
@@ -41,10 +42,6 @@ echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
 # echo -e "\n[+][hw-wallet] launch baker:\n$(
 #     tezos-baker-alpha man
 # )"
-
-echo -e "\n
-    tezos-baker-alpha --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS --remote-signer http://$SIGNER_ADDRESS:$SIGNER_PORT run with local node /var/tezos-node $PUBLIC_KEY_HASH   
-"
 
 echo -e "\n[+][hw-wallet] launch baker:\n$(
     tezos-baker-alpha --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS --remote-signer http://$SIGNER_ADDRESS:$SIGNER_PORT run with local node /var/tezos-node $PUBLIC_KEY_HASH   

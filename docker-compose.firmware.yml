@@ -3,6 +3,7 @@ version: '3'
 services:
 
   trezor-baking-firmware:
+    image: simplestakingcom/trezor-baking-firmware
     build: ./trezor-baking-firmware
     hostname: trezor-baking-firmware
     devices:
