@@ -26,16 +26,16 @@ services:
       - trezor-remote-signer
     restart: on-failure
 
-  # tezos-baker:
-  #   build: ./tezos-baker
-  #   hostname: tezos-baker
-  #   env_file:
-  #     - ./config.baking.env
-  #   volumes:
-  #     - ./tezos-baker:/var/tezos-baker
-  #     - /home/juchuchu/.tezos-node:/var/tezos-node
-  #   entrypoint: /var/tezos-baker/tezos-baker.sh
-  #   depends_on:
-  #     - trezor-remote-signer
+  tezos-baker:
+    build: ./tezos-baker
+    hostname: tezos-baker
+    env_file:
+      - ./config.baking.env
+    volumes:
+      - ./tezos-baker:/var/tezos-baker
+      - /home/juchuchu/.tezos-node:/var/tezos-node
+    entrypoint: /var/tezos-baker/tezos-baker.sh
+    depends_on:
+      - trezor-remote-signer
 
-    # restart: on-failure
+    restart: on-failure

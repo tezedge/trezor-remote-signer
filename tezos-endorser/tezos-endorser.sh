@@ -4,11 +4,9 @@ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
 # wait for remote signer to load, move to Docker file 
 sleep 5s 
 
-# stop staking
-"$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/stop_staking --silent \
-         --header 'Content-Type: application/json' )"
-
-sleep 5s 
+# # stop staking
+# "$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/stop_staking --silent \
+#          --header 'Content-Type: application/json' )"
 
 # register/get public key hash for BIP32 path
 PUBLIC_KEY_HASH="$(
@@ -38,18 +36,7 @@ echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
     import public key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
 )"
 
-
-# start staking !!! only before 
-"$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/start_staking --silent \
-         --header 'Content-Type: application/json' )"
-
-# echo -e "\n[+][hw-wallet] launch endorser:\n$(
-#     tezos-endorser-alpha man
-# )"
-
 echo -e "\n[+][hw-wallet] launch endorser:\n$(
     tezos-endorser-alpha --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     --remote-signer http://$SIGNER_ADDRESS:$SIGNER_PORT run
 )"
-
-# nohup ./tezos-endorser-alpha --remote-signer http://<signer address>:<signer port> run > endorser.out &

@@ -39,7 +39,7 @@ upload_firmware(){
         echo "After 5+ minutes you will be requested to confirm new firmware on you Trezor T.\n"
 
         echo "\033[1;33mWARNING:\e[0m Device will be completly ereased. Please backup your mnemonic."
-        read -p "Are you sure that you want to upload new firmware ? [Y/n] " RESPONSE
+        read -p "Are you sure you want to upload new firmware ? [Y/n] " RESPONSE
         if ! [ "$RESPONSE" = "y" ] && ! [ "$RESPONSE" = "" ]; then
             exit 0
         fi
@@ -107,7 +107,7 @@ while :; do
         ;;
 
     -d|--debug)
-        echo "\033[1;37mStart banking & endorsing indebug mode \e[0m\n";
+        echo "\033[1;37mStart banking & endorsing in debug mode \e[0m\n";
         start_baking_debug
         ;;
 

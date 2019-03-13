@@ -23,9 +23,9 @@ services:
     volumes:
       - ./tezos-endorser:/var/tezos-endorser
     entrypoint: /var/tezos-endorser/tezos-endorser.sh
+    network_mode: "host"
     depends_on:
       - trezor-remote-signer
-    network_mode: "host"
     
   # tezos-baker:
   #   build: ./tezos-baker
@@ -39,4 +39,3 @@ services:
   #   network_mode: "host"
   #   depends_on:
   #     - trezor-remote-signer
-    # restart: on-failure

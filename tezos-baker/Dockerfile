@@ -6,6 +6,3 @@ RUN apk add --no-cache \
     curl \
     jq
 
-# change user back to docker
-# USER docker
-
