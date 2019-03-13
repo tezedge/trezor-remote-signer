@@ -39,6 +39,6 @@ RUN cd python-trezor && python setup.py develop
 RUN cd ..
 
 # development stage, replace with git repo later
-RUN git clone https://jurajselep@bitbucket.org/jurajselep/signer.git
+RUN git clone https://jurajselep@bitbucket.org/jurajselep/signer.git #6
 
 RUN cd signer
