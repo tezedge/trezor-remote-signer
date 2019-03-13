@@ -80,7 +80,7 @@ start_baking_debug() {
     # use Trezor emulator form trezor-core
     
     # find connected Trezor T device
-    # find_trezor_usb "1209:53c1"
+    find_trezor_usb "1209:53c1"
 
     # launch docker-compose
     docker-compose -f docker-compose.debug.yml up
