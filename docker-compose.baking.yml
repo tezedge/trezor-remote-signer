@@ -2,17 +2,21 @@ version: '3'
 
 services:
 
-  trezor-remote-signer:
-    build: ./trezor-remote-signer
-    hostname: trezor-remote-signer
+  trezor-signer:
+    build: ./trezor-signer
+    hostname: trezor-signer
     devices:
       # lsusb -d 1209:53c1
       - ${TREZOR_USB_PATH}
     ports:
     - "5000:5000"
     volumes:
-      - ./trezor-remote-signer:/var/trezor-remote-signer
-    entrypoint: /var/trezor-remote-signer/remote-signer.sh
+      - ./trezor-signer:/var/trezor-signer
+    entrypoint: /var/trezor-signer/trezor-signer.sh
+    # environment:
+    #   - LOGLEVEL=DEBUG
+    logging:
+        driver: none
 
   tezos-endorser:
     build: ./tezos-endorser
@@ -23,7 +27,7 @@ services:
       - ./tezos-endorser:/var/tezos-endorser
     entrypoint: /var/tezos-endorser/tezos-endorser.sh
     depends_on:
-      - trezor-remote-signer
+      - trezor-signer
     restart: on-failure
 
   tezos-baker:
@@ -36,6 +40,5 @@ services:
       - /home/juchuchu/.tezos-node:/var/tezos-node
     entrypoint: /var/tezos-baker/tezos-baker.sh
     depends_on:
-      - trezor-remote-signer
-
+      - trezor-signer
     restart: on-failure

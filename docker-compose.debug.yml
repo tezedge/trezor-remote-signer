@@ -2,19 +2,6 @@ version: '3'
 
 services:
 
-  # trezor-remote-signer:
-  #   build: ./trezor-remote-signer
-  #   hostname: trezor-remote-signer
-  #   # devices:
-  #     # lsusb -d 1209:53c1
-  #     # - ${TREZOR_USB_PATH}
-  #   ports:
-  #   - "5000:5000"
-  #   volumes:
-  #     - ./trezor-remote-signer:/var/trezor-remote-signer
-  #   entrypoint: /var/trezor-remote-signer/remote-signer.sh
-  #   network_mode: "host"
-
   trezor-signer:
     build: ./trezor-signer
     hostname: trezor-signer
@@ -26,10 +13,12 @@ services:
     volumes:
       - ./trezor-signer:/var/trezor-signer
     entrypoint: /var/trezor-signer/trezor-signer.sh
-    environment:
-      - LOGLEVEL=DEBUG
+    # environment:
+    #   - LOGLEVEL=DEBUG
     network_mode: "host"
- 
+    logging:
+        driver: none
+
   tezos-endorser:
     build: ./tezos-endorser
     hostname: tezos-endorser
@@ -43,15 +32,15 @@ services:
       - trezor-signer
       # - trezor-remote-signer
     
-  # tezos-baker:
-  #   build: ./tezos-baker
-  #   hostname: tezos-baker
-  #   env_file:
-  #     - ./config.debug.env
-  #   volumes:
-  #     - ./tezos-baker:/var/tezos-baker
-  #     - /home/juchuchu/.tezos-node:/var/tezos-node
-  #   entrypoint: /var/tezos-baker/tezos-baker.sh
-  #   network_mode: "host"
-  #   depends_on:
-  #     - trezor-remote-signer
+  tezos-baker:
+    build: ./tezos-baker
+    hostname: tezos-baker
+    env_file:
+      - ./config.debug.env
+    volumes:
+      - ./tezos-baker:/var/tezos-baker
+      - /home/juchuchu/.tezos-node:/var/tezos-node
+    entrypoint: /var/tezos-baker/tezos-baker.sh
+    network_mode: "host"
+    depends_on:
+      - trezor-signer
