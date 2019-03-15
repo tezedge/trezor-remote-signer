@@ -1,6 +1,6 @@
 FROM python:3.6.8-alpine
 
-# Needed for pycurl
+# set env for pycurl
 ENV PYCURL_SSL_LIBRARY=openssl
 
 RUN \
@@ -24,7 +24,6 @@ RUN \
         libcurl \
         curl-dev
 
-
 COPY requirements.txt /
 RUN pip3 install -r requirements.txt
 
@@ -36,7 +35,7 @@ RUN cp -r trezor-common python-trezor/vendor/
 # setup python trezor
 RUN cd python-trezor && python setup.py develop
 
-# development stage, replace with github repo later
+# development stage, replace with github repo
 RUN git clone https://jurajselep@bitbucket.org/jurajselep/signer.git #6
 
 WORKDIR ./signer
