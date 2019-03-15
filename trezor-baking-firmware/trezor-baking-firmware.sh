@@ -14,7 +14,7 @@ git submodule update --init --recursive && \
 make clean vendor build_boardloader build_bootloader build_prodtest build_firmware
 
 # show available firmwares
-ls -la trezor-core/build/firmware
+# ls -la trezor-core/build/firmware
 
 # upload compiled firmware
 trezorctl firmware-update --filename /tmp/trezor-core/build/firmware/firmware.bin --skip-vendor-header "simplestaking.com"
