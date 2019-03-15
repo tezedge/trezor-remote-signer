@@ -48,6 +48,7 @@ upload_firmware(){
         find_trezor_usb "1209:53c0"
 
         # launch docker-compose
+        docker-compose -f docker-compose.firmware.yml pull &&
         docker-compose -f docker-compose.firmware.yml up
 }
 
@@ -63,6 +64,7 @@ initialize() {
     find_trezor_usb "1209:53c1"
 
     # launch docker-compose
+    docker-compose -f docker-compose.initialize.yml pull &&
     docker-compose -f docker-compose.initialize.yml up
 }
 
@@ -75,6 +77,7 @@ start_baking() {
     find_trezor_usb "1209:53c1"
 
     # launch docker-compose
+    docker-compose -f docker-compose.baking.yml pull &&
     docker-compose -f docker-compose.baking.yml up
 }
 
@@ -89,6 +92,7 @@ start_baking_debug() {
     find_trezor_usb "1209:53c1"
 
     # launch docker-compose
+    docker-compose -f docker-compose.debug.yml pull &&
     docker-compose -f docker-compose.debug.yml up
 }
 

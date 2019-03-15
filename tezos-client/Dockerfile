@@ -7,4 +7,4 @@ RUN apk add --no-cache \
     jq
 
 # change user back to tezos
-# USER tezos
+USER tezos
