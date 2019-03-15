@@ -1,36 +1,29 @@
-## Minimal requirements : ## 
+## Minimal requirements : 
 
 * docker 
 * docker-compose 
 * tezos-node  
 
-## Steps ##
+## Steps
 
- 1. run remote_signer and listen 
- 2. check if trezor is flashed
-
- 3. exec tezos-client from docker 
-
- 4. get tezos addrres from trezor 
-
- 5. download faucet 
- 6. send xtz to address
-
- 7. import remote keys to tezos-client
- 8. register delegate 
-
- 9. start baking 
 
 ```
-docker-compose up
+Usage:
+run.sh [OPTION]
+
+Set of tools for baking on Tezos with Trezor T support
+
+ -u,  --upload-firmware   upload firmware with Tezos baking support onto your Trezor T
+ -i,  --initialize        activate faucets accounts, register as a baker & import baker address to remote signer
+ -s,  --start             start baking and endorsing
+ -d,  --debug           debug mode suited for development
+ -h,  --help              display this set of tools again
 ```
 
-```
-docker exec 2502d335f68d /bin/sh -c "trezorctl list"
-```
 
-### Donload data from running node  ### 
+## Faster Tezos node sync
 
+Download data from running node
 
 Stop zeronet node otherwise data will be not usable
 
