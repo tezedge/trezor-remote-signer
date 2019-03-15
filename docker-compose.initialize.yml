@@ -13,12 +13,11 @@ services:
     - "5000:5000"
     volumes:
       - ./trezor-signer:/var/trezor-signer
-    # environment:
-    #   - LOGLEVEL=DEBUG
-    # logging:
-    #     driver: none
+    logging:
+        driver: none
 
   tezos-client:
+    image: simplestakingcom/tezos-client
     build: ./tezos-client
     hostname: tezos-client
     env_file:

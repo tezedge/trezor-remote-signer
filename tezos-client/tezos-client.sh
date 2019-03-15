@@ -1,18 +1,16 @@
 #!/bin/sh
 
+# check for faucet files in faucet directory
+if ! [ "$(ls -A /var/tezos-client/faucet/*.json)" ]; then 
+    echo "[-][ERROR][trezor-client] Please download faucet files from https://faucet.tzalpha.net/";
+    echo "           and save them to ./tezos-client/faucet/"; 
+    exit 0;
+fi
 
-# if [ ! -z 'ls /var/tezos-client/faucet/*.json' ]; then 
-#     echo "[-][ERROR] Please download faucet files from https://faucet.tzalpha.net/";
-#     echo "           and save them to ./tezos-client/faucet/"; 
-#     exit 0;
-# fi
-
-# docker is not waiting for remote signer to boot up move code fron entry to docker file 
-sleep 4s
-
-# stop staking
-"$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/stop_staking --silent \
-         --header 'Content-Type: application/json' )"
+# start baking mode
+echo -e "[+][remote-signer] Stop Tezos baking mode \n$(
+    curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/stop_staking --silent \
+        --header 'Content-Type: application/json' )"
 
 # register/get public key hash for BIP32 path
 PUBLIC_KEY_HASH="$(
@@ -25,8 +23,12 @@ if [ -z $PUBLIC_KEY_HASH ]; then
     exit 0;
 fi
 
-echo "[+][remote-signer] address: $PUBLIC_KEY_HASH "
-echo "[+][remote-signer] path: $HW_WALLET_HD_PATH"
+echo -e "\n[+][remote-signer] address: $PUBLIC_KEY_HASH"
+echo -e "[+][remote-signer] path: $HW_WALLET_HD_PATH\n"
+
+# show user address
+sleep 3s
+
 echo "[+][tezos-client] balance: $(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get balance for $PUBLIC_KEY_HASH)"
 echo "[+][tezos-client] timestamp: $(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get timestamp)"
 
@@ -60,24 +62,14 @@ do
     fi
 done
 
-
 # register HD wallet for remote signer 
-echo -e "\n[+][tezos-client] import remote wallet secret key:\n$(
+echo -e "[+][tezos-client] import wallet key:\n$(
     tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     import secret key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
-)"
-echo -e "\n[+][tezos-client] import remote wallet public key:\n$(
-    tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
-    import public key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
 )"
 
 # register hw wallet address as delegate 
 echo -e "\n[+][tezos-client] register delegate\n$(
     tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     register key $PUBLIC_KEY_HASH as delegate --fee 0.1
-)"
-
-echo -e "\n[+][tezos-client] register delegate\n$(
-    tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
-    list known addresses
 )"

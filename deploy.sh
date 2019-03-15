@@ -22,3 +22,8 @@ docker push simplestakingcom/tezos-endorser
 docker build -t simplestakingcom/tezos-baker ./tezos-baker
 # upload image to dockerhub
 docker push simplestakingcom/tezos-baker
+
+# tag tezos-client
+docker build -t simplestakingcom/tezos-client ./tezos-client
+# upload image to dockerhub
+docker push simplestakingcom/tezos-client
