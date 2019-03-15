@@ -2,7 +2,7 @@ version: '3'
 
 services:
   
- trezor-signer:
+  trezor-signer:
     build: ./trezor-signer
     hostname: trezor-signer
     devices:
@@ -15,8 +15,8 @@ services:
     entrypoint: /var/trezor-signer/trezor-signer.sh
     # environment:
     #   - LOGLEVEL=DEBUG
-    logging:
-        driver: none
+    # logging:
+    #     driver: none
 
   tezos-client:
     build: ./tezos-client

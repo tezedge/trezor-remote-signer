@@ -1,6 +1,11 @@
 #!/bin/sh
 
-export
+
+# if [ ! -z 'ls /var/tezos-client/faucet/*.json' ]; then 
+#     echo "[-][ERROR] Please download faucet files from https://faucet.tzalpha.net/";
+#     echo "           and save them to ./tezos-client/faucet/"; 
+#     exit 0;
+# fi
 
 # docker is not waiting for remote signer to boot up move code fron entry to docker file 
 sleep 4s
@@ -8,9 +13,6 @@ sleep 4s
 # stop staking
 "$(curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/stop_staking --silent \
          --header 'Content-Type: application/json' )"
-
-# wait for flask app to load in trezor-remote-signer, move flask start to Dockerfile  
-sleep 4s
 
 # register/get public key hash for BIP32 path
 PUBLIC_KEY_HASH="$(
