@@ -20,6 +20,7 @@ services:
     #     driver: none
 
   tezos-endorser:
+    image: simplestakingcom/tezos-endorser
     build: ./tezos-endorser
     hostname: tezos-endorser
     env_file:
@@ -30,7 +31,6 @@ services:
     network_mode: "host"
     depends_on:
       - trezor-signer
-      # - trezor-remote-signer
     
   # tezos-baker:
   #   build: ./tezos-baker
@@ -44,3 +44,5 @@ services:
   #   network_mode: "host"
   #   depends_on:
   #     - trezor-signer
+  #     - tezos-endorser
+

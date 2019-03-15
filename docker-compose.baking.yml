@@ -17,6 +17,7 @@ services:
         driver: none
 
   # tezos-endorser:
+  #   image: simplestakingcom/tezos-endorser
   #   build: ./tezos-endorser
   #   hostname: tezos-endorser
   #   env_file:

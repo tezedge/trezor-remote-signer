@@ -12,3 +12,8 @@ docker push simplestakingcom/trezor-baking-firmware
 docker build -t simplestakingcom/trezor-signer ./trezor-signer
 # upload image to dockerhub
 docker push simplestakingcom/trezor-signer
+
+# tag tezos-endorser
+docker build -t simplestakingcom/tezos-endorser ./tezos-endorser
+# upload image to dockerhub
+docker push simplestakingcom/tezos-endorser
