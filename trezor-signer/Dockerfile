@@ -42,3 +42,5 @@ RUN cd ..
 RUN git clone https://jurajselep@bitbucket.org/jurajselep/signer.git #6
 
 RUN cd signer
+
+CMD ["gunicorn", "--bind='0.0.0.0:5000'", "app:api"]

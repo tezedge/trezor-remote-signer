@@ -3,6 +3,7 @@ version: '3'
 services:
 
   trezor-signer:
+    image: simplestakingcom/trezor-signer
     build: ./trezor-signer
     hostname: trezor-signer
     devices:
@@ -12,7 +13,6 @@ services:
     - "5000:5000"
     volumes:
       - ./trezor-signer:/var/trezor-signer
-    entrypoint: /var/trezor-signer/trezor-signer.sh
     # environment:
     #   - LOGLEVEL=DEBUG
     network_mode: "host"

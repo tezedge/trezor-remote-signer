@@ -21,25 +21,24 @@ PUBLIC_KEY_HASH="$(
          --data $HW_WALLET_HD_PATH  | jq -r '.pkh' )"
 
 if [ -z $PUBLIC_KEY_HASH ]; then
-    echo "[-][ERROR] Can not get Tezos address for $HW_WALLET_HD_PATH"
+    echo "[-][ERROR][remote-signer] Can not get Tezos address for $HW_WALLET_HD_PATH"
     exit 0;
 fi
 
-echo "[+][hw-wallet] address: $PUBLIC_KEY_HASH "
-echo "[+][hw-wallet] path: $HW_WALLET_HD_PATH"
-echo "[+][hw-wallet] balance: $(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get balance for $PUBLIC_KEY_HASH)"
+echo "[+][remote-signer] address: $PUBLIC_KEY_HASH "
+echo "[+][remote-signer] path: $HW_WALLET_HD_PATH"
+echo "[+][tezos-client] balance: $(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get balance for $PUBLIC_KEY_HASH)"
+echo "[+][tezos-client] timestamp: $(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get timestamp)"
 
-# tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS  man -v 3
-echo "[+][remote-node] timestamp: $(tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS get timestamp)"
-
-#change direcotry to faucet folder
+# change directory to faucet folder
 cd "/var/tezos-client/faucet/"
 
-# activate all wallets from ./faucet direcotry
+# activate all wallets from faucet direcotry
 for file in *.json
 do  
     # check if file exist
     if [ -f "$file" ];then
+
         # remove .json from filename
         FAUCET_PUBLIC_KEY_HASH=${file::-5}  
         echo -e "\n[+][wallet] activate: $FAUCET_PUBLIC_KEY_HASH"
@@ -63,23 +62,22 @@ done
 
 
 # register HD wallet for remote signer 
-echo -e "\n[+][hw-wallet] import remote wallet secret key:\n$(
+echo -e "\n[+][tezos-client] import remote wallet secret key:\n$(
     tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     import secret key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
 )"
-echo -e "\n[+][hw-wallet] import remote wallet public key:\n$(
+echo -e "\n[+][tezos-client] import remote wallet public key:\n$(
     tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     import public key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
 )"
 
-
 # register hw wallet address as delegate 
-echo -e "\n[+][hw-wallet] register delegate\n$(
+echo -e "\n[+][tezos-client] register delegate\n$(
     tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     register key $PUBLIC_KEY_HASH as delegate --fee 0.1
 )"
 
-echo -e "\n[+][hw-wallet] register delegate\n$(
+echo -e "\n[+][tezos-client] register delegate\n$(
     tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     list known addresses
 )"
