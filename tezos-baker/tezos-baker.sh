@@ -1,8 +1,8 @@
 #!/bin/sh
 export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
 
-# wait for remote signer to load, move to Docker file 
-sleep 5s 
+# wait for remote signer to load 
+sleep 3s 
 
 # change permissions
 chmod 755 /var/tezos-node
@@ -18,17 +18,17 @@ PUBLIC_KEY_HASH="$(
          --header 'Content-Type: application/json' \
          --data $HW_WALLET_HD_PATH  | jq -r '.pkh' )"
 
-echo "[+][remote-signer] hw wallet address: $PUBLIC_KEY_HASH "
+echo "\n[+][remote-signer] hw wallet address: $PUBLIC_KEY_HASH \n"
 
 # register HD wallet for remote signer
-echo -e "\n[+][tezos-client] import remote wallet secret key:\n$(
-    tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
-    import secret key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
-)"
-
-echo -e "\n[+][tezos-client] import remote wallet public key:\n$(
+echo -e "[+][tezos-client] import wallet public key:\n$(
     tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
     import public key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
+)"
+
+echo -e "[+][tezos-client] import wallet secret key:\n$(
+    tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
+    import secret key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
 )"
 
 echo -e "\n[+][tezos-baker-alpha] launch baker:\n$(

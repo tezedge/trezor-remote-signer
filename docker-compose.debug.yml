@@ -13,11 +13,11 @@ services:
     - "5000:5000"
     volumes:
       - ./trezor-signer:/var/trezor-signer
-    # environment:
-    #   - LOGLEVEL=DEBUG
+    environment:
+      - LOGLEVEL=DEBUG
     network_mode: "host"
-    logging:
-        driver: none
+    # logging:
+    #     driver: none
 
   tezos-endorser:
     build: ./tezos-endorser
@@ -32,15 +32,15 @@ services:
       - trezor-signer
       # - trezor-remote-signer
     
-  tezos-baker:
-    build: ./tezos-baker
-    hostname: tezos-baker
-    env_file:
-      - ./config.debug.env
-    volumes:
-      - ./tezos-baker:/var/tezos-baker
-      - /home/juchuchu/.tezos-node:/var/tezos-node
-    entrypoint: /var/tezos-baker/tezos-baker.sh
-    network_mode: "host"
-    depends_on:
-      - trezor-signer
+  # tezos-baker:
+  #   build: ./tezos-baker
+  #   hostname: tezos-baker
+  #   env_file:
+  #     - ./config.debug.env
+  #   volumes:
+  #     - ./tezos-baker:/var/tezos-baker
+  #     - /home/juchuchu/.tezos-node:/var/tezos-node
+  #   entrypoint: /var/tezos-baker/tezos-baker.sh
+  #   network_mode: "host"
+  #   depends_on:
+  #     - trezor-signer

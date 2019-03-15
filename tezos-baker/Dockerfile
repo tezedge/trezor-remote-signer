@@ -6,3 +6,4 @@ RUN apk add --no-cache \
     curl \
     jq
 
+USER tezos

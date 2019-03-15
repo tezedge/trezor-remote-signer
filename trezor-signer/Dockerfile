@@ -36,11 +36,9 @@ RUN cp -r trezor-common python-trezor/vendor/
 # setup python trezor
 RUN cd python-trezor && python setup.py develop
 
-RUN cd ..
-
-# development stage, replace with git repo later
+# development stage, replace with github repo later
 RUN git clone https://jurajselep@bitbucket.org/jurajselep/signer.git #6
 
-RUN cd signer
+WORKDIR ./signer
 
-CMD ["gunicorn", "--bind='0.0.0.0:5000'", "app:api"]
+CMD ["gunicorn", "--bind=0.0.0.0:5000", "app:api"]
