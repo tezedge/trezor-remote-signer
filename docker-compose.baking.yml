@@ -16,20 +16,21 @@ services:
     logging:
         driver: none
 
-  # tezos-endorser:
-  #   image: simplestakingcom/tezos-endorser
-  #   build: ./tezos-endorser
-  #   hostname: tezos-endorser
-  #   env_file:
-  #     - ./config.baking.env
-  #   volumes:
-  #     - ./tezos-endorser:/var/tezos-endorser
-  #   entrypoint: /var/tezos-endorser/tezos-endorser.sh
-  #   depends_on:
-  #     - trezor-signer
-  #   restart: on-failure
+  tezos-endorser:
+    image: simplestakingcom/tezos-endorser
+    build: ./tezos-endorser
+    hostname: tezos-endorser
+    env_file:
+      - ./config.baking.env
+    volumes:
+      - ./tezos-endorser:/var/tezos-endorser
+    entrypoint: /var/tezos-endorser/tezos-endorser.sh
+    depends_on:
+      - trezor-signer
+    restart: on-failure
 
   tezos-baker:
+    image: simplestakingcom/tezos-baker
     build: ./tezos-baker
     hostname: tezos-baker
     env_file:

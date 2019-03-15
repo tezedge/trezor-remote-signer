@@ -68,8 +68,8 @@ initialize() {
 
 start_baking() {
 
-    # user path for Tezos node data 
-    export TEZOS_NODE_DATA_PATH=/home/juchuchu/.tezos-node
+    # read env variables from config 
+    export $(grep -v '^#' config.baking.env | xargs -d '\n')
 
     # find connected Trezor T device
     find_trezor_usb "1209:53c1"
@@ -80,8 +80,8 @@ start_baking() {
 
 start_baking_debug() {
 
-    # user path for Tezos node data 
-    export TEZOS_NODE_DATA_PATH=/home/juchuchu/.tezos-node
+    # read env variables from config 
+    export $(grep -v '^#' config.debug.env | xargs -d '\n')
 
     # use Trezor emulator form trezor-core
    

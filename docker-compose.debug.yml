@@ -32,17 +32,18 @@ services:
     depends_on:
       - trezor-signer
     
-  # tezos-baker:
-  #   build: ./tezos-baker
-  #   hostname: tezos-baker
-  #   env_file:
-  #     - ./config.debug.env
-  #   volumes:
-  #     - ./tezos-baker:/var/tezos-baker
-  #     - ${TEZOS_NODE_DATA_PATH}:/var/tezos-node
-  #   entrypoint: /var/tezos-baker/tezos-baker.sh
-  #   network_mode: "host"
-  #   depends_on:
-  #     - trezor-signer
-  #     - tezos-endorser
+  tezos-baker:
+    image: simplestakingcom/tezos-baker
+    build: ./tezos-baker
+    hostname: tezos-baker
+    env_file:
+      - ./config.debug.env
+    volumes:
+      - ./tezos-baker:/var/tezos-baker
+      - ${TEZOS_NODE_DATA_PATH}:/var/tezos-node
+    entrypoint: /var/tezos-baker/tezos-baker.sh
+    network_mode: "host"
+    depends_on:
+      - trezor-signer
+      - tezos-endorser
 

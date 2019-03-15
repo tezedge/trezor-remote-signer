@@ -4,8 +4,15 @@ export TEZOS_CLIENT_UNSAFE_DISABLE_DISCLAIMER=Y
 # wait for tezos endorser 
 sleep 3s 
 
-# change permissions
-# ls -la /var/tezos-node
+# change permissions for tezos node data
+sudo chmod -R 777 /var/tezos-node
+
+# check if path to Tezos node data exists
+if ! [ -e /var/tezos-node/context/data.mdb ]; then
+    echo -e "[-][ERROR][remote-signer] Path to Tezos node data not found."
+    echo -e "   Please check your path to synced Tezos node data."
+    exit 0;
+fi
 
 # start baking mode
 echo -e "[+][remote-signer] Start Tezos baking mode \n$(
