@@ -57,8 +57,8 @@ initialize() {
 
     echo "1. download faucets from https://faucet.tzalpha.net/"
     echo "2. save it to ./tezos-client/faucet"
-    echo "3. register delegate"
-    echo "4. import delegator address to remote signer\n"
+    echo "3. transfer XTZ from activated accounts to delegate "
+    echo "4. register delegate for baking\n"
 
     # find connected Trezor T device
     find_trezor_usb "1209:53c1"
