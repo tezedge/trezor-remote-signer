@@ -21,9 +21,9 @@ services:
     build: ./tezos-client
     hostname: tezos-client
     env_file:
-      - ./config.initialize.env
+      - ./config.baking.env
     volumes:
       - ./tezos-client:/var/tezos-client
-    entrypoint: /var/tezos-client/tezos-client-initialize.sh
+    entrypoint: /var/tezos-client/tezos-client-baking-stop.sh
     depends_on:
       - trezor-signer

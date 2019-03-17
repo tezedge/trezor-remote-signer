@@ -68,7 +68,7 @@ initialize() {
     docker-compose -f docker-compose.initialize.yml up
 }
 
-start_baking() {
+baking_start() {
 
     # read env variables from config 
     export $(grep -v '^#' config.baking.env | xargs -d '\n')
@@ -77,11 +77,25 @@ start_baking() {
     find_trezor_usb "1209:53c1"
 
     # launch docker-compose
-    docker-compose -f docker-compose.baking.yml pull &&
-    docker-compose -f docker-compose.baking.yml up
+    docker-compose -f docker-compose.baking-start.yml pull &&
+    docker-compose -f docker-compose.baking-start.yml up
 }
 
-start_baking_debug() {
+baking_stop() {
+
+    # read env variables from config 
+    export $(grep -v '^#' config.baking.env | xargs -d '\n')
+
+    # find connected Trezor T device
+    find_trezor_usb "1209:53c1"
+
+    # launch docker-compose
+    docker-compose -f docker-compose.baking-stop.yml pull &&
+    docker-compose -f docker-compose.baking-stop.yml up
+}
+
+
+baking_start_debug() {
 
     # read env variables from config 
     export $(grep -v '^#' config.debug.env | xargs -d '\n')
@@ -111,14 +125,19 @@ while :; do
         initialize
         ;;
 
-    -s|--start)
+    -b|--start)
         echo "\033[1;37mStart banking & endorsing\e[0m\n";
-        start_baking
+        baking_start
+        ;;
+
+    -s|--stop)
+        echo "\033[1;37mStop banking mode\e[0m\n";
+        baking_stop
         ;;
 
     -d|--debug)
         echo "\033[1;37mStart banking & endorsing in debug mode \e[0m\n";
-        start_baking_debug
+        baking_start_debug
         ;;
 
     -h|--help)
@@ -127,7 +146,8 @@ while :; do
         echo "Set of tools for baking on Tezos with Trezor T support \n"
         echo " -u,  --upload-firmware   upload firmware with support for Tezos baking"
         echo " -i,  --initialize        activate faucets, transfer XTZ, register delegate"
-        echo " -s,  --start             start baking and endorsing"
+        echo " -b,  --start             start baking and endorsing"
+        echo " -s,  --stop              stop baking mode"
         echo " -d,  --debug             debug mode suited for development"
         echo " -h,  --help              display this message"
         exit 0
