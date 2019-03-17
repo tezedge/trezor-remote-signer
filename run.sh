@@ -90,7 +90,7 @@ baking_stop() {
     find_trezor_usb "1209:53c1"
 
     # launch docker-compose
-    docker-compose -f docker-compose.baking-stop.yml pull &&
+    # docker-compose -f docker-compose.baking-stop.yml pull &&
     docker-compose -f docker-compose.baking-stop.yml up
 }
 

@@ -13,8 +13,8 @@ services:
     - "5000:5000"
     volumes:
       - ./trezor-signer:/var/trezor-signer
-    logging:
-        driver: none
+    # logging:
+    #     driver: none
 
   tezos-client:
     image: simplestakingcom/tezos-client
