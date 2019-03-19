@@ -1,11 +1,23 @@
 #!/bin/sh
 
 # check for faucet files in faucet directory
-if ! [ "$(ls -A /var/tezos-client/faucet/*.json)" ]; then 
-    echo "[-][ERROR][trezor-client] Please download faucet files from https://faucet.tzalpha.net/";
-    echo "           and save them to ./tezos-client/faucet/"; 
-    exit 0;
-fi
+# if ! [ "$(ls -A /var/tezos-client/faucet/*.json)" ]; then 
+#     echo "[-][ERROR][trezor-client] Please download faucet files from https://faucet.tzalpha.net/";
+#     echo "           and save them to ./tezos-client/faucet/"; 
+#     exit 0;
+# fi
+
+# Create new Trezor wallet
+echo -e "[+][remote-signer] Create new Trezor wallet \n$(
+    curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/reset_device --silent \
+        --header 'Content-Type: application/json' )"
+
+
+# Set new pin
+echo -e "[+][remote-signer] Set new pin \n$(
+    curl --request GET http://$SIGNER_ADDRESS:$SIGNER_PORT/change_pin  --silent \
+        --header 'Content-Type: application/json' )"
+
 
 # start baking mode
 echo -e "[+][remote-signer] Stop Tezos baking mode \n$(
@@ -68,6 +80,10 @@ echo -e "[+][tezos-client] import wallet key:\n$(
     import secret key $PUBLIC_KEY_HASH http://$SIGNER_ADDRESS:$SIGNER_PORT/$PUBLIC_KEY_HASH --force
 )"
 
+read -p "Register delegate [Y/n] " RESPONSE
+if ! [ "$RESPONSE" = "y" ] && ! [ "$RESPONSE" = "" ]; then
+    exit 0
+fi
 # register hw wallet address as delegate 
 echo -e "\n[+][tezos-client] register delegate\n$(
     tezos-client --addr $NODE_ADDRESS --port $NODE_PORT $NODE_TLS \
