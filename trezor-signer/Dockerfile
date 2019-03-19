@@ -36,7 +36,7 @@ RUN cp -r trezor-common python-trezor/vendor/
 RUN cd python-trezor && python setup.py develop
 
 # development stage, replace with github repo
-RUN git clone https://jurajselep@bitbucket.org/jurajselep/signer.git #9
+RUN git clone https://github.com/simplestaking/signer #1
 
 WORKDIR ./signer
 
