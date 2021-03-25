@@ -15,7 +15,7 @@ pyblake2==1.1.2
 pycurl==7.43.0.2
 pyresttest==1.7.1
 python-mimeparse==1.6.0
-PyYAML==3.13
+PyYAML==5.4
 requests==2.21.0
 six==1.12.0
 typing-extensions==3.7.2
